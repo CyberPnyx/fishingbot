@@ -1,7 +1,7 @@
 import pyautogui
 import math
 import time
-from pynput.keyboard import Controller
+from pynput.keyboard import Controller, Listener, Key
 
 # Initialisation du contrôleur clavier
 keyboard = Controller()
@@ -17,7 +17,10 @@ target_color = (81, 158, 198)
 tolerance = 10
 
 # Définir le chemin de l'image
-start_image_path = "start.png"
+start_image_path = "resources/start.png"
+
+# Variable pour quitter le programme
+exit_program = False
 
 def is_color_close(color, target_color, tolerance=10):
     """
@@ -54,10 +57,24 @@ def detect_image_on_screen(image_path, confidence=0.8):
         print(f"Erreur lors de la détection de {image_path} : {e}")
         return None
 
+def on_press(key):
+    """
+    Gestionnaire d'événements pour les appuis sur les touches.
+    """
+    global exit_program
+    if key == Key.esc or (hasattr(key, 'char') and key.char == 'o'):
+        print("Commande de sortie détectée. Fermeture du programme...")
+        exit_program = True
+        return False
+
 if __name__ == "__main__":
-    while True:
+    # Démarrer l'écouteur clavier dans un thread séparé
+    listener = Listener(on_press=on_press)
+    listener.start()
+
+    while not exit_program:
         print("Lancement en attente.")
-        while True:
+        while not exit_program:
             start_found = detect_image_on_screen(start_image_path)
 
             if start_found:
@@ -65,6 +82,9 @@ if __name__ == "__main__":
                 break
             else:
                 time.sleep(0.1)  # Attendre avant de réessayer
+
+        if exit_program:
+            break
 
         # Récupérer les points du cercle
         circle_points = get_circle_points(center_x, center_y, radius, num_points)
@@ -74,6 +94,8 @@ if __name__ == "__main__":
 
         print("Recherche de pixels bleus sur le cercle...")
         for x, y in circle_points:
+            if exit_program:
+                break
             try:
                 color = pyautogui.pixel(x, y)
                 if is_color_close(color, target_color, tolerance):
@@ -82,13 +104,16 @@ if __name__ == "__main__":
             except Exception as e:
                 pass
 
+        if exit_program:
+            break
+
         if not tracked_pixels:
             print("Aucun pixel bleu trouvé sur le cercle. Retour à la recherche de l'image de départ.")
         else:
             print(f"{len(tracked_pixels)} pixels bleus trouvés. Surveillance en cours...")
 
             # Surveiller les pixels pour un changement de couleur
-            while True:
+            while not exit_program:
                 pixel_changed = False
                 for coord, initial_color in tracked_pixels.items():
                     try:
@@ -103,10 +128,13 @@ if __name__ == "__main__":
                     except Exception as e:
                         print(f"Erreur lors de la vérification du pixel {coord}.")
 
-                if pixel_changed:
-                    break  # Recommencer le processus depuis le début
+                if pixel_changed or exit_program:
+                    break
+
+        if exit_program:
+            break
 
         print("Redémarrage de la boucle principale...")
         time.sleep(3)  # Attendre avant de recommencer la recherche de l'image de départ
-        keyboard.press('e')
-        keyboard.release('e')
+
+    print("Programme terminé.")
