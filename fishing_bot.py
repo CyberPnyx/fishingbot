@@ -122,6 +122,7 @@ if __name__ == "__main__":
                             print(f"Le pixel à {coord} a changé de couleur : {current_color}")
                             print("Appui sur la touche E...")
                             keyboard.press('e')
+                            time.sleep(0.1)
                             keyboard.release('e')
                             pixel_changed = True
                             break  # Sortir de la boucle des pixels
@@ -134,9 +135,10 @@ if __name__ == "__main__":
         if exit_program:
             break
 
-        print("Redémarrage de la boucle principale...")
         time.sleep(2)  # Attendre avant de recommencer la recherche de l'image de départ
+        print("Redémarrage de la boucle principale...")
         keyboard.press('e')
+        time.sleep(0.1)
         keyboard.release('e')
 
     print("Programme terminé.")
