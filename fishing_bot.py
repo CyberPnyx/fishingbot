@@ -16,8 +16,10 @@ num_points = 20  # Nombre de points à vérifier sur le cercle
 target_color = (81, 158, 198)
 tolerance = 10
 
-# Définir le chemin de l'image
+# Définir les chemins des images
 start_image_path = "resources/start.png"
+no_place_image_path = "resources/no_place.png"
+no_fish_image_path = "resources/no_fish.png"
 
 # Variable pour quitter le programme
 exit_program = False
@@ -54,7 +56,7 @@ def detect_image_on_screen(image_path, confidence=0.8):
             print(f"Image {image_path} non trouvée.")
             return None
     except Exception as e:
-        print(f"Attente du lancement")
+        print(f"Erreur lors de la détection de l'image {image_path}: {e}")
         return None
 
 def on_press(key):
@@ -74,14 +76,31 @@ if __name__ == "__main__":
 
     while not exit_program:
         print("Lancement du programme...")
+
+        # Vérifier l'image no_place avant de chercher start
+        no_place_found = detect_image_on_screen(no_place_image_path)
+        if no_place_found:
+            print("Aucune place disponible dans l'inventaire.")
+            time.sleep(1)
+            continue  # Revenir au début de la boucle principale
+
         while not exit_program:
             start_found = detect_image_on_screen(start_image_path)
+            no_fish_found = detect_image_on_screen(no_fish_image_path)
 
             if start_found:
                 print("L'image de départ est détectée. Démarrage du processus...")
                 break
-            else:
-                time.sleep(0.1)  # Attendre avant de réessayer
+
+            if no_fish_found:
+                print("Aucun poisson détecté. Appui sur 'E' et attente...")
+                keyboard.press('e')
+                time.sleep(0.1)
+                keyboard.release('e')
+                time.sleep(1)  # Attendre avant de recommencer
+                continue  # Revenir à la recherche de l'image start
+
+            time.sleep(0.1)  # Attendre avant de réessayer
 
         if exit_program:
             break
