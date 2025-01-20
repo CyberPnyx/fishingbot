@@ -135,6 +135,8 @@ if __name__ == "__main__":
             break
 
         print("Redémarrage de la boucle principale...")
-        time.sleep(3)  # Attendre avant de recommencer la recherche de l'image de départ
+        time.sleep(2)  # Attendre avant de recommencer la recherche de l'image de départ
+        keyboard.press('e')
+        keyboard.release('e')
 
     print("Programme terminé.")
