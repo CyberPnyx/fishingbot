@@ -54,7 +54,7 @@ def detect_image_on_screen(image_path, confidence=0.8):
             print(f"Image {image_path} non trouvée.")
             return None
     except Exception as e:
-        print(f"Erreur lors de la détection de {image_path} : {e}")
+        print(f"Attente du lancement")
         return None
 
 def on_press(key):
