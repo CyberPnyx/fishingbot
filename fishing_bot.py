@@ -73,7 +73,7 @@ if __name__ == "__main__":
     listener.start()
 
     while not exit_program:
-        print("Lancement en attente.")
+        print("Lancement du programme...")
         while not exit_program:
             start_found = detect_image_on_screen(start_image_path)
 
