@@ -18,6 +18,8 @@ Après avoir installé les dépendances, vous pouvez lancer le bot en utilisant 
 python fishing_bot.py
 ```
 
+Pour stopper le programme utilise la touche **o**
+
 ## Contribuer
 
 Les contributions sont les bienvenues! N'hésitez pas à soumettre des pull requests ou à ouvrir des issues pour signaler des bugs ou proposer des améliorations.
