@@ -56,7 +56,6 @@ def detect_image_on_screen(image_path, confidence=0.8):
             print(f"Image {image_path} non trouvée.")
             return None
     except Exception as e:
-        print(f"Erreur lors de la détection de l'image {image_path}: {e}")
         return None
 
 def on_press(key):
@@ -78,18 +77,19 @@ if __name__ == "__main__":
         print("Lancement du programme...")
 
         # Vérifier l'image no_place avant de chercher start
-        no_place_found = detect_image_on_screen(no_place_image_path)
-        if no_place_found:
-            print("Aucune place disponible dans l'inventaire.")
-            time.sleep(1)
-            continue  # Revenir au début de la boucle principale
-
         while not exit_program:
             start_found = detect_image_on_screen(start_image_path)
             no_fish_found = detect_image_on_screen(no_fish_image_path)
+            no_place_found = detect_image_on_screen(no_place_image_path)
 
             if start_found:
                 print("L'image de départ est détectée. Démarrage du processus...")
+                break
+
+            if no_place_found:
+                print("Aucune place disponible dans l'inventaire.")
+                time.sleep(1)
+                exit_program = True
                 break
 
             if no_fish_found:
